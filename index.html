@@ -3,163 +3,46 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Quiz de estudio - Física y Biología</title>
+<title>Plataforma de estudio V3</title>
 <style>
-  :root{
-    --bg1:#0b1020;
-    --bg2:#111827;
-    --text:#f8fafc;
-    --muted:#cbd5e1;
-    --red:#e11d48;
-    --blue:#2563eb;
-    --yellow:#f59e0b;
-    --green:#16a34a;
-    --purple:#7c3aed;
-    --card:rgba(17,24,39,.72);
-    --line:rgba(255,255,255,.08);
-  }
-  *{box-sizing:border-box}
-  html,body{margin:0;padding:0;height:100%}
-  body{
-    font-family:Arial, Helvetica, sans-serif;
-    color:var(--text);
-    background:
-      radial-gradient(circle at 15% 15%, rgba(37,99,235,.35), transparent 24%),
-      radial-gradient(circle at 85% 80%, rgba(124,58,237,.25), transparent 22%),
-      linear-gradient(135deg,var(--bg1),var(--bg2));
-    min-height:100vh;
-  }
-  .app{min-height:100vh;display:flex;flex-direction:column}
-  .topbar{
-    display:flex;align-items:center;justify-content:space-between;gap:12px;
-    padding:14px 18px;background:rgba(0,0,0,.18);border-bottom:1px solid var(--line);
-    position:sticky;top:0;z-index:5;backdrop-filter: blur(10px);
-  }
-  .brand{font-size:clamp(18px,2vw,24px);font-weight:800}
-  .meta{display:flex;gap:10px;flex-wrap:wrap;justify-content:flex-end}
-  .pill{
-    background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.06);
-    border-radius:999px;padding:9px 12px;font-size:14px;color:var(--muted);white-space:nowrap;
-  }
-  .timer-wrap{height:10px;background:rgba(255,255,255,.06)}
-  .timer-bar{
-    height:100%;width:100%;
-    background:linear-gradient(90deg,var(--green),var(--yellow),var(--red));
-    transition:width 1s linear;
-  }
-  .screen{width:min(1120px,100%);margin:auto;padding:28px 18px 32px}
-  .card{
-    background:var(--card);border:1px solid var(--line);border-radius:28px;
-    box-shadow:0 20px 50px rgba(0,0,0,.28);padding:28px;
-  }
-  .center{text-align:center}
-  h1,h2,h3,p{margin:0}
-  .subtitle{
-    color:var(--muted);line-height:1.55;margin-top:12px;max-width:850px;margin-inline:auto;
-  }
-  .btn{
-    border:none;border-radius:18px;padding:15px 20px;font-size:17px;font-weight:800;
-    cursor:pointer;color:white;transition:transform .15s ease, filter .15s ease;
-  }
-  .btn:hover{transform:translateY(-1px);filter:brightness(1.04)}
-  .btn.primary{background:linear-gradient(135deg,var(--purple),var(--blue))}
-  .btn.secondary{background:rgba(255,255,255,.10)}
-  .actions{margin-top:22px;display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
-  .menu-grid{
-    display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:26px;
-  }
-  .subject-card{
-    background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.07);
-    border-radius:24px;padding:22px;text-align:left;
-  }
-  .subject-card h3{font-size:24px;margin-bottom:10px}
-  .subject-card p{color:var(--muted);line-height:1.55}
-  .chips{display:flex;gap:8px;flex-wrap:wrap;margin:14px 0 18px}
-  .chip{
-    font-size:12px;padding:7px 10px;border-radius:999px;background:rgba(255,255,255,.08);color:var(--muted)
-  }
-  .subject-btn{
-    width:100%;margin-top:6px;border:none;border-radius:16px;padding:14px 16px;
-    font-size:16px;font-weight:800;cursor:pointer;color:white;
-  }
-  .physics-btn{background:linear-gradient(135deg,#2563eb,#7c3aed)}
-  .bio-btn{background:linear-gradient(135deg,#16a34a,#0ea5e9)}
-  .question-box{text-align:center;margin-bottom:22px}
-  .question-number{color:var(--muted);font-size:14px;margin-bottom:10px}
-  .question{
-    font-size:clamp(24px, 3.4vw, 38px);line-height:1.2;font-weight:900;
-  }
-  .answers{
-    display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:18px;
-  }
-  .answer{
-    border:none;min-height:100px;border-radius:22px;color:white;font-size:18px;font-weight:800;
-    text-align:left;padding:18px 18px 18px 20px;cursor:pointer;display:flex;align-items:center;gap:14px;
-    transition:transform .12s ease, opacity .2s ease, filter .2s ease;
-    box-shadow:0 12px 25px rgba(0,0,0,.24);
-  }
-  .answer:hover{transform:translateY(-2px)}
-  .answer:disabled{cursor:default}
-  .shape{
-    width:30px;height:30px;flex:0 0 30px;display:grid;place-items:center;
-    background:rgba(255,255,255,.18);border-radius:10px;font-size:18px;font-weight:900;
-  }
-  .red{background:var(--red)}
-  .blue{background:var(--blue)}
-  .yellow{background:var(--yellow)}
-  .green{background:var(--green)}
-  .dim{opacity:.38;filter:grayscale(.25)}
-  .correct{
-    outline:4px solid #bbf7d0;
-    box-shadow:0 0 0 7px rgba(34,197,94,.22), 0 14px 28px rgba(0,0,0,.32);
-  }
-  .wrong{
-    outline:4px solid #fecaca;
-    animation:shake .35s linear 1;
-  }
-  @keyframes shake{
-    0%{transform:translateX(0)}
-    25%{transform:translateX(-5px)}
-    50%{transform:translateX(6px)}
-    75%{transform:translateX(-4px)}
-    100%{transform:translateX(0)}
-  }
-  .feedback{
-    margin-top:20px;text-align:center;min-height:44px;font-size:22px;font-weight:900;
-  }
-  .feedback small{
-    display:block;margin-top:8px;color:var(--muted);font-size:14px;font-weight:500;line-height:1.5;
-  }
-  .hidden{display:none}
-  .ranking{
-    margin-top:22px;display:grid;gap:10px;max-width:720px;margin-inline:auto;
-  }
-  .rank{
-    background:rgba(255,255,255,.06);padding:15px 18px;border-radius:18px;
-    display:flex;justify-content:space-between;align-items:center;font-size:16px;
-  }
-  .badge{
-    padding:7px 10px;border-radius:999px;background:rgba(255,255,255,.1);color:var(--muted);font-size:12px;
-  }
-  .review-list{
-    margin-top:20px;text-align:left;background:rgba(255,255,255,.05);
-    border:1px solid rgba(255,255,255,.06);border-radius:20px;padding:18px;
-  }
-  .review-item{
-    padding:14px 0;border-bottom:1px solid rgba(255,255,255,.08);
-  }
-  .review-item:last-child{border-bottom:none}
-  .review-item p{color:var(--muted);margin-top:6px;line-height:1.5}
-  @media (max-width:900px){
-    .menu-grid,.answers{grid-template-columns:1fr}
-    .card{padding:20px}
-  }
+:root{--bg1:#0b1020;--bg2:#111827;--text:#f8fafc;--muted:#cbd5e1;--red:#e11d48;--blue:#2563eb;--yellow:#f59e0b;--green:#16a34a;--purple:#7c3aed;--card:rgba(17,24,39,.74);--line:rgba(255,255,255,.08);}
+*{box-sizing:border-box} html,body{margin:0;padding:0;height:100%}
+body{font-family:Arial,Helvetica,sans-serif;color:var(--text);background:radial-gradient(circle at 10% 10%, rgba(37,99,235,.35), transparent 25%),radial-gradient(circle at 90% 80%, rgba(124,58,237,.25), transparent 22%),linear-gradient(135deg,var(--bg1),var(--bg2));min-height:100vh}
+.app{min-height:100vh;display:flex;flex-direction:column}
+.topbar{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 18px;background:rgba(0,0,0,.18);border-bottom:1px solid var(--line);position:sticky;top:0;z-index:5;backdrop-filter:blur(10px)}
+.brand{font-size:clamp(18px,2vw,24px);font-weight:800}
+.meta{display:flex;gap:10px;flex-wrap:wrap;justify-content:flex-end}
+.pill{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.06);border-radius:999px;padding:9px 12px;font-size:14px;color:var(--muted)}
+.timer-wrap{height:10px;background:rgba(255,255,255,.06)} .timer-bar{height:100%;width:100%;background:linear-gradient(90deg,var(--green),var(--yellow),var(--red));transition:width 1s linear}
+.screen{width:min(1120px,100%);margin:auto;padding:28px 18px 32px} .card{background:var(--card);border:1px solid var(--line);border-radius:28px;box-shadow:0 20px 50px rgba(0,0,0,.28);padding:28px}
+.center{text-align:center} h1,h2,h3,p{margin:0}
+.subtitle{color:var(--muted);line-height:1.55;margin-top:12px;max-width:860px;margin-inline:auto}
+.menu-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:26px}
+.subject-card{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.07);border-radius:24px;padding:22px;text-align:left}
+.subject-card h3{font-size:24px;margin-bottom:10px} .subject-card p{color:var(--muted);line-height:1.55}
+.chips{display:flex;gap:8px;flex-wrap:wrap;margin:14px 0 18px} .chip{font-size:12px;padding:7px 10px;border-radius:999px;background:rgba(255,255,255,.08);color:var(--muted)}
+.subject-btn,.btn{width:100%;border:none;border-radius:16px;padding:14px 16px;font-size:16px;font-weight:800;cursor:pointer;color:white}
+.physics-btn,.btn.primary{background:linear-gradient(135deg,#2563eb,#7c3aed)} .bio-btn,.btn.secondary{background:linear-gradient(135deg,#16a34a,#0ea5e9)}
+.question-box{text-align:center;margin-bottom:22px} .question-number{color:var(--muted);font-size:14px;margin-bottom:10px} .question{font-size:clamp(24px,3.4vw,38px);line-height:1.2;font-weight:900}
+.answers{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:18px}
+.answer{border:none;min-height:100px;border-radius:22px;color:white;font-size:18px;font-weight:800;text-align:left;padding:18px 18px 18px 20px;cursor:pointer;display:flex;align-items:center;gap:14px;transition:transform .12s ease,opacity .2s ease,filter .2s ease;box-shadow:0 12px 25px rgba(0,0,0,.24)}
+.answer:hover{transform:translateY(-2px)} .answer:disabled{cursor:default}
+.shape{width:30px;height:30px;flex:0 0 30px;display:grid;place-items:center;background:rgba(255,255,255,.18);border-radius:10px;font-size:18px;font-weight:900}
+.red{background:var(--red)} .blue{background:var(--blue)} .yellow{background:var(--yellow)} .green{background:var(--green)}
+.dim{opacity:.38;filter:grayscale(.25)} .correct{outline:4px solid #bbf7d0;box-shadow:0 0 0 7px rgba(34,197,94,.22),0 14px 28px rgba(0,0,0,.32)} .wrong{outline:4px solid #fecaca}
+.feedback{margin-top:20px;text-align:center;min-height:44px;font-size:22px;font-weight:900} .feedback small{display:block;margin-top:8px;color:var(--muted);font-size:14px;font-weight:500;line-height:1.5}
+.hidden{display:none} .ranking{margin-top:22px;display:grid;gap:10px;max-width:720px;margin-inline:auto}
+.rank{background:rgba(255,255,255,.06);padding:15px 18px;border-radius:18px;display:flex;justify-content:space-between;align-items:center;font-size:16px} .badge{padding:7px 10px;border-radius:999px;background:rgba(255,255,255,.1);color:var(--muted);font-size:12px}
+.review-list{margin-top:20px;text-align:left;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.06);border-radius:20px;padding:18px}
+.review-item{padding:14px 0;border-bottom:1px solid rgba(255,255,255,.08)} .review-item:last-child{border-bottom:none} .review-item p{color:var(--muted);margin-top:6px;line-height:1.5}
+.actions{margin-top:22px;display:flex;gap:12px;justify-content:center;flex-wrap:wrap} .actions .btn{width:auto;min-width:220px}
+@media (max-width:900px){.menu-grid,.answers{grid-template-columns:1fr}.card{padding:20px}.actions .btn{width:100%}}
 </style>
 </head>
 <body>
 <div class="app">
   <div class="topbar">
-    <div class="brand">📚 Menú de estudio</div>
+    <div class="brand">📚 Plataforma de estudio V3</div>
     <div class="meta">
       <div class="pill" id="subjectPill">Materia: —</div>
       <div class="pill" id="scorePill">Puntaje: 0</div>
@@ -172,31 +55,18 @@
   <div class="screen" id="menuScreen">
     <div class="card center">
       <h1>Selecciona una materia</h1>
-      <p class="subtitle">
-        Escoge la materia que quiere practicar. Cada juego tiene cronómetro, colores de acierto/error,
-        puntaje y repaso final de preguntas falladas.
-      </p>
-
+      <p class="subtitle">Versión V3: mantuve Física sólida y reforcé Biología para que quede más balanceada con agua, sales minerales, carbohidratos, lípidos, proteínas y aminoácidos.</p>
       <div class="menu-grid">
         <div class="subject-card">
           <h3>⚛️ Física</h3>
-          <p>Repaso de conceptos básicos, ramas de la física, científicos, GPS, medición, cifras significativas, notación científica y factores de conversión.</p>
-          <div class="chips">
-            <span class="chip">Cronómetro</span>
-            <span class="chip">20 preguntas</span>
-            <span class="chip">Repaso final</span>
-          </div>
+          <p>Basada en tu resumen de física y mate: ramas, científicos, paradoja de los gemelos, GPS, medición, cifras significativas, notación científica y prefijos del SI.</p>
+          <div class="chips"><span class="chip">40 preguntas</span><span class="chip">Basada en tus apuntes</span><span class="chip">Repaso final</span></div>
           <button class="subject-btn physics-btn" onclick="startSubject('fisica')">Estudiar Física</button>
         </div>
-
         <div class="subject-card">
           <h3>🧬 Biología</h3>
-          <p>Repaso de biología como ciencia, ramas, agua, sales minerales, carbohidratos, lípidos, proteínas y aminoácidos.</p>
-          <div class="chips">
-            <span class="chip">Cronómetro</span>
-            <span class="chip">20 preguntas</span>
-            <span class="chip">Repaso final</span>
-          </div>
+          <p>Basada en tus documentos de biología, agua, sales minerales, carbohidratos, lípidos, proteínas y aminoácidos, ahora con mejor equilibrio entre temas.</p>
+          <div class="chips"><span class="chip">47 preguntas</span><span class="chip">Más balanceada</span><span class="chip">Repaso final</span></div>
           <button class="subject-btn bio-btn" onclick="startSubject('biologia')">Estudiar Biología</button>
         </div>
       </div>
@@ -218,7 +88,6 @@
     <div class="card center">
       <h1>🏁 Juego terminado</h1>
       <p class="subtitle" id="finalMessage"></p>
-
       <div class="ranking">
         <div class="rank"><span>Materia</span><strong id="finalSubject">—</strong></div>
         <div class="rank"><span>Puntaje final</span><strong id="finalScore">0</strong></div>
@@ -226,9 +95,7 @@
         <div class="rank"><span>Racha más alta</span><strong id="finalStreak">0</strong></div>
         <div class="rank"><span>Nivel</span><span class="badge" id="levelBadge">Aprendiz</span></div>
       </div>
-
       <div id="reviewBox" class="review-list hidden"></div>
-
       <div class="actions">
         <button class="btn primary" onclick="backToMenu()">Volver al menú</button>
         <button class="btn secondary" id="retryWrongBtn" onclick="retryWrongQuestions()">Practicar solo las que falló</button>
@@ -239,94 +106,24 @@
 
 <script>
 const questionBanks = {
-  fisica: [
-    { q:"¿Qué es la física?", o:["La ciencia que estudia la naturaleza mediante las matemáticas","La ciencia que estudia solo números","La ciencia que estudia solo seres vivos","La ciencia que estudia únicamente el espacio"], c:0, exp:"La física estudia propiedades de la naturaleza como materia, energía, tiempo y movimiento." },
-    { q:"¿Qué rama de la física estudia el movimiento de los cuerpos?", o:["Óptica","Mecánica","Acústica","Electricidad"], c:1, exp:"La mecánica analiza cómo se mueven los cuerpos." },
-    { q:"¿Qué rama de la física estudia la luz?", o:["Óptica","Mecánica","Acústica","Termodinámica"], c:0, exp:"La óptica estudia los fenómenos relacionados con la luz." },
-    { q:"¿Qué rama estudia el calor y la temperatura?", o:["Electricidad","Acústica","Termodinámica","Mecánica"], c:2, exp:"La termodinámica estudia el calor y la temperatura." },
-    { q:"¿Qué rama estudia fenómenos relacionados con la electricidad?", o:["Electricidad","Óptica","Astronomía","Geología"], c:0, exp:"La electricidad se enfoca en fenómenos eléctricos." },
-    { q:"¿Qué rama estudia las ondas sonoras?", o:["Física moderna","Acústica","Mecánica","Termodinámica"], c:1, exp:"La acústica estudia los fenómenos sonoros y las ondas en un medio." },
-    { q:"¿Quién propuso las 3 leyes del movimiento?", o:["Isaac Newton","Galileo Galilei","Copérnico","Arquímedes"], c:0, exp:"Newton formuló las tres leyes del movimiento." },
-    { q:"¿Quién afirmó que la Tierra era el centro del universo?", o:["Copérnico","Ptolomeo","Einstein","Arquímedes"], c:1, exp:"Ptolomeo defendió el modelo geocéntrico." },
-    { q:"¿Quién propuso que el Sol es el centro del universo?", o:["Aristóteles","Galileo","Copérnico","Leucipo"], c:2, exp:"Copérnico planteó el modelo heliocéntrico." },
-    { q:"¿Quién apoyó las teorías de Copérnico y utilizó el telescopio?", o:["Galileo Galilei","Tales de Mileto","Demócrito","Ptolomeo"], c:0, exp:"Galileo apoyó las ideas de Copérnico y usó el telescopio." },
-    { q:"¿Qué explica la paradoja de los gemelos?", o:["Que ambos envejecen igual","Que el tiempo pasa más lento para quien viaja muy rápido","Que la gravedad desaparece","Que los satélites se detienen"], c:1, exp:"Según la relatividad, el tiempo transcurre más lento a velocidades cercanas a la luz." },
-    { q:"¿Para qué sirve el GPS?", o:["Para saber la ubicación usando satélites","Para medir temperatura","Para calcular la edad","Para medir peso"], c:0, exp:"El GPS usa señales satelitales para ubicar posiciones." },
-    { q:"¿Qué es medir?", o:["Comparar con un patrón","Contar letras","Sumar valores","Adivinar resultados"], c:0, exp:"Medir es comparar una magnitud con una unidad o patrón." },
-    { q:"¿Cuál es una ciencia auxiliar de la física?", o:["Matemáticas","Pintura","Música","Literatura"], c:0, exp:"Las matemáticas son una herramienta fundamental de la física." },
-    { q:"¿Para qué sirven las cifras significativas?", o:["Para decorar resultados","Para dar un número correcto y evitar errores","Para escribir más rápido","Para hacer dibujos"], c:1, exp:"Ayudan a expresar resultados con precisión." },
-    { q:"¿Cuántas cifras significativas tiene 3.158?", o:["2","3","4","5"], c:2, exp:"Todos los dígitos distintos de cero son significativos." },
-    { q:"¿Cuántas cifras significativas tiene 0,0358?", o:["2","3","4","5"], c:1, exp:"Los ceros a la izquierda del primer dígito no cuentan como significativos." },
-    { q:"¿Qué es la notación científica?", o:["Escribir números usando potencias de 10","Escribir números con letras","Una tabla de unidades","Una forma de medir masa"], c:0, exp:"Sirve para abreviar números muy grandes o muy pequeños." },
-    { q:"¿Qué prefijo del SI corresponde a 10⁶?", o:["Kilo","Nano","Mega","Centi"], c:2, exp:"10⁶ corresponde a Mega, símbolo M." },
-    { q:"¿Qué permiten hacer los factores de conversión?", o:["Cambiar unidades de una medición","Descubrir planetas","Encender satélites","Crear leyes físicas"], c:0, exp:"Permiten convertir una unidad de medida en otra equivalente." }
-  ],
-  biologia: [
-    { q:"¿Qué estudia la biología?", o:["Los seres vivos, sus interacciones y el ambiente físico","Solo las plantas","Solo los animales","Solo las células"], c:0, exp:"La biología es la ciencia que estudia a todos los seres vivos y su relación con el entorno." },
-    { q:"¿Qué rama de la biología estudia las plantas?", o:["Zoología","Botánica","Genética","Citología"], c:1, exp:"La botánica estudia las plantas." },
-    { q:"¿Qué rama investiga el origen de las especies y su variación en el tiempo?", o:["Ecología","Evolución","Fisiología","Histología"], c:1, exp:"La evolución estudia cómo cambian las especies a lo largo del tiempo." },
-    { q:"¿Qué rama estudia los tejidos?", o:["Histología","Zoología","Morfología","Biotecnología"], c:0, exp:"La histología estudia la estructura y función de los tejidos." },
-    { q:"¿Qué rama analiza la interacción entre los seres vivos y el entorno?", o:["Genética","Citología","Ecología","Botánica"], c:2, exp:"La ecología analiza las relaciones entre los seres vivos y su ambiente." },
-    { q:"¿Qué rama estudia genes y herencia?", o:["Citología","Fisiología","Genética","Anatomía"], c:2, exp:"La genética estudia los genes y su herencia." },
-    { q:"¿Qué es el agua para los seres vivos?", o:["Algo opcional","Una sustancia esencial para toda forma de vida","Solo un lubricante","Solo un solvente industrial"], c:1, exp:"El agua es esencial para la vida y participa en transporte, metabolismo y regulación." },
-    { q:"¿Cuál de estas es una propiedad importante del agua?", o:["Es inflamable","Tiene alta tensión superficial","Es metálica","No entra a las células"], c:1, exp:"El agua tiene alta tensión superficial y estabilidad térmica." },
-    { q:"¿Qué clasificación describe una sustancia que repele el agua?", o:["Hidrofílica","Anfipática","Hidrofóbica","Osmótica"], c:2, exp:"Hidrofóbica significa que repele el agua." },
-    { q:"¿Qué hacen las sales minerales en el cuerpo?", o:["Solo dan color","Regulan actividades celulares","Solo producen energía","Solo forman grasa"], c:1, exp:"Las sales minerales regulan procesos celulares y funciones del organismo." },
-    { q:"¿Qué mineral es responsable del transporte de gases respiratorios en la sangre?", o:["Calcio","Hierro","Zinc","Flúor"], c:1, exp:"El hierro participa en el transporte de gases respiratorios." },
-    { q:"¿Qué mineral protege contra las caries?", o:["Yoduro","Fosfato","Fluoruro","Potasio"], c:2, exp:"El fluoruro ayuda a proteger los dientes de las caries." },
-    { q:"¿Cuál es la función principal inmediata de los carbohidratos?", o:["Dar energía inmediata","Formar huesos","Proteger contra caries","Transportar oxígeno"], c:0, exp:"Los carbohidratos son una fuente de energía inmediata." },
-    { q:"¿Cuál de estos es un disacárido?", o:["Glucosa","Rafinosa","Sacarosa","Celulosa"], c:2, exp:"La sacarosa es un disacárido." },
-    { q:"¿Dónde se almacena la glucosa en forma de glucógeno?", o:["En el ADN","En el aire","Como reserva del organismo","En los huesos"], c:2, exp:"El glucógeno es una forma de reserva de glucosa." },
-    { q:"¿Qué son los lípidos?", o:["Moléculas solubles en agua","Moléculas orgánicas insolubles en agua","Iones minerales","Proteínas pequeñas"], c:1, exp:"Los lípidos son moléculas orgánicas insolubles en agua." },
-    { q:"¿Qué tipo de lípido forma la bicapa de la membrana plasmática?", o:["Céridos","Esteroides","Fosfolípidos","Glicéridos"], c:2, exp:"Los fosfolípidos forman la bicapa lipídica de la membrana celular." },
-    { q:"¿Qué son las proteínas?", o:["Sales minerales","Macromoléculas formadas por aminoácidos","Solo grasas","Azúcares simples"], c:1, exp:"Las proteínas están formadas por aminoácidos unidos por enlaces peptídicos." },
-    { q:"¿Cuál es una función de las proteínas?", o:["Solo dar color","Catalizar reacciones químicas","Solo almacenar agua","Solo producir caries"], c:1, exp:"Muchas proteínas funcionan como enzimas y aceleran reacciones químicas." },
-    { q:"¿Qué son los aminoácidos?", o:["La unidad básica formadora de proteínas","Un tipo de vitamina","Un tipo de carbohidrato","Una hormona"], c:0, exp:"Los aminoácidos son la base con la que se forman las proteínas." }
-  ]
+  fisica: [{"q": "¿Qué es la física?", "o": ["La ciencia que estudia el comportamiento de las propiedades de la naturaleza mediante las matemáticas", "La ciencia que estudia solo seres vivos", "La ciencia que estudia únicamente planetas", "La ciencia que estudia solo números"], "c": 0, "exp": "Según tus apuntes, la física estudia propiedades de la naturaleza como tiempo, energía y materia."}, {"q": "¿Qué rama de la física estudia el movimiento de los cuerpos?", "o": ["Mecánica", "Óptica", "Acústica", "Termodinámica"], "c": 0, "exp": "La mecánica estudia el movimiento de los cuerpos."}, {"q": "¿Qué rama estudia fenómenos relacionados con la luz?", "o": ["Óptica", "Electricidad", "Acústica", "Física moderna"], "c": 0, "exp": "La óptica estudia los fenómenos relacionados con la luz."}, {"q": "¿Qué rama estudia el calor y la temperatura en los cuerpos?", "o": ["Termodinámica", "Mecánica", "Electricidad", "Astronomía"], "c": 0, "exp": "La termodinámica estudia el calor y la temperatura."}, {"q": "¿Qué rama estudia fenómenos relacionados con la electricidad?", "o": ["Electricidad", "Óptica", "Acústica", "Geología"], "c": 0, "exp": "Así aparece en el resumen de física."}, {"q": "¿Qué rama estudia las ondas que se propagan en un medio o los fenómenos sonoros?", "o": ["Acústica", "Física moderna", "Mecánica", "Biología"], "c": 0, "exp": "La acústica estudia las ondas y fenómenos sonoros."}, {"q": "¿Qué estudia la física moderna según el resumen?", "o": ["El comportamiento de la materia y las bases de la relatividad de Einstein", "Solo la temperatura", "Solo la electricidad", "Solo la flotación"], "c": 0, "exp": "Esa es la definición que viene en tus apuntes."}, {"q": "¿Qué científico se relaciona con la electroestática por frotación?", "o": ["Tales de Mileto", "Arquímedes", "Newton", "Ptolomeo"], "c": 0, "exp": "El material asocia la electroestática por frotación con Tales de Mileto."}, {"q": "¿Quiénes plantearon primeras hipótesis sobre la estructura de la materia?", "o": ["Leucipo y Demócrito", "Galileo y Newton", "Copérnico y Ptolomeo", "Arquímedes y Aristóteles"], "c": 0, "exp": "Así aparecen en la lista de primeros científicos."}, {"q": "¿Quién sostenía que los objetos más pesados caen más rápido?", "o": ["Aristóteles", "Newton", "Galileo", "Demócrito"], "c": 0, "exp": "En tus apuntes esa idea está asociada a Aristóteles."}, {"q": "¿Quién defendía que la Tierra era el centro del universo?", "o": ["Ptolomeo", "Copérnico", "Galileo", "Newton"], "c": 0, "exp": "Ptolomeo aparece asociado al modelo geocéntrico."}, {"q": "¿Quién formuló el principio de flotación de barcos?", "o": ["Arquímedes", "Galileo", "Einstein", "Leucipo"], "c": 0, "exp": "Arquímedes es el científico asociado a ese principio."}, {"q": "¿Quién propuso que el Sol era el centro del universo?", "o": ["Nicolás Copérnico", "Ptolomeo", "Aristóteles", "Tales de Mileto"], "c": 0, "exp": "Copérnico aparece asociado al modelo heliocéntrico."}, {"q": "¿Quién usó el primer telescopio y adoptó teorías de Copérnico?", "o": ["Galileo Galilei", "Newton", "Demócrito", "Arquímedes"], "c": 0, "exp": "Galileo Galilei aparece relacionado con el telescopio y con Copérnico."}, {"q": "¿Quién es considerado padre de la física clásica?", "o": ["Isaac Newton", "Albert Einstein", "Galileo", "Ptolomeo"], "c": 0, "exp": "Newton está descrito así en tus apuntes."}, {"q": "¿Cuántas leyes propuso Newton para explicar el movimiento de los cuerpos?", "o": ["3", "2", "4", "5"], "c": 0, "exp": "El resumen indica que Newton propuso tres leyes."}, {"q": "¿En qué teoría se basa la paradoja de los gemelos?", "o": ["Teoría de la relatividad de Albert Einstein", "Teoría celular", "Teoría de la evolución", "Teoría geocéntrica"], "c": 0, "exp": "La paradoja de los gemelos se explica con la relatividad."}, {"q": "¿Qué le ocurre al gemelo que viaja a velocidad muy cercana a la luz?", "o": ["Envejece menos", "Envejece más", "No cambia", "Se queda congelado"], "c": 0, "exp": "Según la relatividad, el tiempo pasa más lento para él."}, {"q": "¿Por qué envejece menos el gemelo viajero?", "o": ["Porque el tiempo pasa más lento para objetos a velocidades muy altas", "Porque duerme más", "Porque está lejos de la Tierra", "Porque pesa menos"], "c": 0, "exp": "Esa es la explicación del documento."}, {"q": "¿Para qué sirve el GPS según el resumen?", "o": ["Para saber nuestra ubicación o la de ciertas cosas", "Para medir temperatura", "Para pesar objetos", "Para estudiar la luz"], "c": 0, "exp": "El GPS sirve para determinar ubicación."}, {"q": "¿Cómo funciona el GPS según el material?", "o": ["Por medio de satélites que envían señales", "Por ondas sonoras", "Por reacciones químicas", "Por imanes terrestres"], "c": 0, "exp": "El documento menciona satélites y señales."}, {"q": "¿Cuál de estas aparece como ciencia auxiliar de la física?", "o": ["Matemáticas", "Pintura", "Música", "Literatura"], "c": 0, "exp": "Las matemáticas están listadas como ciencia auxiliar."}, {"q": "¿Cuál de estas también aparece como ciencia auxiliar de la física?", "o": ["Astronomía", "Danza", "Teatro", "Escultura"], "c": 0, "exp": "Astronomía aparece incluida en la lista."}, {"q": "¿Cuál es una aplicación de la tecnología en salud que se menciona?", "o": ["Radioterapia", "Escultura", "Fotografía", "Ballet"], "c": 0, "exp": "En salud, tus apuntes mencionan radioterapia."}, {"q": "¿Cuál es una aplicación de la tecnología en espacio que se menciona?", "o": ["GPS", "Poesía", "Escultura", "Cerámica"], "c": 0, "exp": "En espacio aparece GPS."}, {"q": "¿Qué es medir?", "o": ["Definir un patrón y ver cuánto entra en él", "Adivinar un valor", "Redondear cifras", "Contar solamente enteros"], "c": 0, "exp": "Esa es la definición textual del documento."}, {"q": "¿Qué son las unidades derivadas del SI?", "o": ["Las que surgen de la combinación de las unidades fundamentales", "Las más antiguas del sistema", "Las que solo miden temperatura", "Las que no cambian nunca"], "c": 0, "exp": "Así se explican en el resumen."}, {"q": "¿Para qué sirven las cifras significativas?", "o": ["Para dar un número correcto y evitar errores", "Para decorar resultados", "Para medir tiempo", "Para cambiar masa en peso"], "c": 0, "exp": "Eso dice la sección de cifras significativas."}, {"q": "Según la regla 1, ¿qué pasa con números que no tienen cero?", "o": ["Todos son significativos", "Ninguno es significativo", "Solo el primero cuenta", "Solo el último cuenta"], "c": 0, "exp": "La regla indica que todos son significativos."}, {"q": "¿Cuántas cifras significativas tiene 3.158?", "o": ["4", "3", "2", "5"], "c": 0, "exp": "Todos sus dígitos cuentan como significativos."}, {"q": "Según la regla 2, ¿qué pasa con los ceros entre dígitos?", "o": ["Son significativos", "No son significativos", "Se eliminan", "Valen medio"], "c": 0, "exp": "Los ceros entre dígitos sí cuentan."}, {"q": "¿Cuántas cifras significativas tiene 2026?", "o": ["4", "3", "2", "5"], "c": 0, "exp": "El cero entre dígitos es significativo."}, {"q": "Según la regla 3, ¿qué pasa con ceros a la izquierda del primer dígito?", "o": ["No son significativos", "Siempre son significativos", "Cambian la unidad", "Se redondean"], "c": 0, "exp": "Los ceros a la izquierda no cuentan."}, {"q": "¿Cuántas cifras significativas tiene 0,0358?", "o": ["3", "2", "4", "5"], "c": 0, "exp": "Los ceros iniciales no se cuentan."}, {"q": "¿Qué pasa si un número termina en cero, según la regla 4 del resumen?", "o": ["Ese cero sí es significativo", "Ese cero nunca cuenta", "Se elimina siempre", "Solo cuenta si es entero"], "c": 0, "exp": "El documento dice que si termina en cero, sí es significativo."}, {"q": "¿Cuántas cifras significativas tiene 0,03150?", "o": ["4", "3", "5", "2"], "c": 0, "exp": "Ese ejemplo aparece en el resumen."}, {"q": "¿Qué es la notación científica?", "o": ["Escribir números de forma abreviada usando potencias de diez", "Escribir números con letras", "Contar cifras significativas", "Cambiar metros a centímetros"], "c": 0, "exp": "Así se define en tus apuntes."}, {"q": "¿Qué prefijo del SI corresponde a 10⁹?", "o": ["Giga", "Mega", "Kilo", "Nano"], "c": 0, "exp": "10⁹ corresponde a Giga."}, {"q": "¿Qué prefijo del SI corresponde a 10⁶?", "o": ["Mega", "Giga", "Mili", "Micro"], "c": 0, "exp": "10⁶ corresponde a Mega."}, {"q": "¿Para qué sirven los factores de conversión?", "o": ["Para efectuar cambios en las unidades de una medición", "Para cambiar la velocidad de la luz", "Para alterar la gravedad", "Para clasificar planetas"], "c": 0, "exp": "Así se define en la última parte del resumen."}],
+  biologia: [{"q": "¿Qué es la biología como ciencia?", "o": ["La ciencia que estudia a todos los seres vivos, sus interacciones y el ambiente físico", "La ciencia que estudia solo animales", "La ciencia que estudia solo plantas", "La ciencia que estudia solo minerales"], "c": 0, "exp": "Así se define la biología en tu documento principal."}, {"q": "En la explicación del término biología, ¿qué significa bios?", "o": ["Vida", "Estudio", "Célula", "Agua"], "c": 0, "exp": "El documento indica bios = vida."}, {"q": "En la explicación del término biología, ¿qué significa logos?", "o": ["Estudio", "Vida", "Materia", "Reino"], "c": 0, "exp": "El documento indica logos = estudio."}, {"q": "¿Qué rama de la biología estudia las plantas?", "o": ["Botánica", "Zoología", "Genética", "Citología"], "c": 0, "exp": "La botánica estudia las plantas."}, {"q": "¿Qué rama investiga el origen de especies y su variación en el tiempo?", "o": ["Evolución", "Histología", "Ecología", "Fisiología"], "c": 0, "exp": "Así se describe evolución en el material."}, {"q": "¿Qué rama estudia tejidos en organismos pluricelulares?", "o": ["Histología", "Citología", "Botánica", "Biotecnología"], "c": 0, "exp": "La histología estudia tejidos, estructura y función."}, {"q": "¿Qué rama investiga organismos del reino animal?", "o": ["Zoología", "Botánica", "Morfología", "Ecología"], "c": 0, "exp": "La zoología estudia animales."}, {"q": "¿Qué rama estudia funciones y procesos vitales de los seres vivos?", "o": ["Fisiología", "Genética", "Citología", "Anatomía"], "c": 0, "exp": "La fisiología estudia funciones y procesos vitales."}, {"q": "¿Qué rama analiza la interacción entre seres vivos y entorno?", "o": ["Ecología", "Zoología", "Botánica", "Embriología"], "c": 0, "exp": "La ecología estudia esa interacción."}, {"q": "¿Qué rama estudia genes y su herencia?", "o": ["Genética", "Biotecnología", "Morfología", "Histología"], "c": 0, "exp": "La genética estudia genes y herencia."}, {"q": "¿Qué rama estudia estructura, función y reproducción de las células?", "o": ["Citología", "Ecología", "Botánica", "Zoología"], "c": 0, "exp": "La citología estudia la célula."}, {"q": "¿Qué rama elabora productos útiles para el humano aprovechando organismos o sustancias?", "o": ["Biotecnología", "Histología", "Fisiología", "Evolución"], "c": 0, "exp": "Así se define biotecnología en tu material."}, {"q": "¿Qué estudia la morfología o anatomía según el documento?", "o": ["La estructura y partes del organismo", "Solo genes", "Solo tejidos", "Solo agua"], "c": 0, "exp": "Así aparece en el listado de ramas."}, {"q": "¿Cuál de estas se menciona como beneficio de la biología en salud?", "o": ["Vacunas", "Solo carros", "Solo satélites", "Solo electricidad"], "c": 0, "exp": "Las vacunas aparecen como aplicación en salud."}, {"q": "¿Qué hacen las vacunas según el documento?", "o": ["Estimulan al sistema inmunológico y ayudan a defenderse de infecciones", "Aumentan el agua celular", "Solo curan fracturas", "Cambian genes"], "c": 0, "exp": "Así se describe la función de las vacunas."}, {"q": "¿Qué hacen los antibióticos según el documento?", "o": ["Detienen el desarrollo de microorganismos causantes de enfermedades", "Aumentan el colesterol", "Forman huesos", "Transportan oxígeno"], "c": 0, "exp": "Eso se menciona en las aplicaciones de la biología."}, {"q": "¿Qué hacen los sueros antiofídicos?", "o": ["Neutralizan toxinas de mordedura de serpiente", "Forman proteínas", "Aumentan la glucosa", "Disuelven lípidos"], "c": 0, "exp": "Así aparece en tus apuntes."}, {"q": "¿Qué es el agua según el documento?", "o": ["Sustancia líquida, incolora, inodora e insípida, esencial para toda forma de vida", "Un metal", "Una sal mineral", "Un carbohidrato"], "c": 0, "exp": "Así se presenta el agua en el documento."}, {"q": "¿De qué está compuesta el agua?", "o": ["Hidrógeno y oxígeno", "Carbono y nitrógeno", "Hierro y calcio", "Sodio y potasio"], "c": 0, "exp": "El documento dice que está compuesta por hidrógeno y oxígeno."}, {"q": "¿Qué hacen las células con el agua según el material?", "o": ["Están adaptadas a sus propiedades fisicoquímicas", "La rechazan por completo", "No la necesitan", "Solo la usan las plantas"], "c": 0, "exp": "El documento dice que el agua permea todas las células."}, {"q": "¿Cuál es una función importante del agua en seres vivos?", "o": ["Transporta nutrientes", "Solo endurece huesos", "Solo da color", "Solo forma ADN"], "c": 0, "exp": "El agua ayuda a transportar nutrientes."}, {"q": "¿Cuál es otra función importante del agua?", "o": ["Ayuda en reacciones metabólicas", "Solo produce grasa", "Solo genera sonido", "Solo forma minerales"], "c": 0, "exp": "El material la relaciona con reacciones metabólicas."}, {"q": "¿Qué propiedad del agua aparece en el documento?", "o": ["Estabilidad térmica", "Inflamabilidad alta", "Carácter metálico", "Ausencia de tensión superficial"], "c": 0, "exp": "El agua tiene estabilidad térmica."}, {"q": "¿Qué otra propiedad del agua se menciona?", "o": ["Alta tensión superficial", "Es combustible", "Es tóxica por naturaleza", "Es sólida siempre"], "c": 0, "exp": "Así aparece en el documento del agua."}, {"q": "¿Cómo se clasifica algo que repele el agua?", "o": ["Hidrofóbica", "Hidrofílica", "Anfipática", "Metálica"], "c": 0, "exp": "Hidrofóbica significa que repele el agua."}, {"q": "¿Cómo se clasifica algo que sí permite el agua?", "o": ["Hidrofílica", "Hidrofóbica", "Salina", "Mineral"], "c": 0, "exp": "Hidrofílica indica afinidad por el agua."}, {"q": "¿Cómo se clasifica algo que tiene un lado que la permite y otro que no?", "o": ["Anfipática", "Hidrofóbica", "Ácida", "Básica"], "c": 0, "exp": "Así se define anfipática en el material."}, {"q": "¿Qué permiten las características del agua según el documento?", "o": ["Transporte de sustancias, reacciones químicas, lubricación y termorregulación", "Solo visión", "Solo movimiento muscular", "Solo fotosíntesis"], "c": 0, "exp": "Ese conjunto de funciones aparece al final del documento del agua."}, {"q": "¿Qué son las sales minerales?", "o": ["Compuestos químicos que regulan actividades celulares", "Únicamente grasas", "Solo proteínas", "Solo gases"], "c": 0, "exp": "Así se definen en el documento."}, {"q": "¿Qué función de las sales minerales se menciona?", "o": ["Forman parte de huesos y dientes", "Solo forman ADN", "Solo transportan luz", "Solo forman azúcar"], "c": 0, "exp": "El documento indica que forman parte de huesos y dientes."}, {"q": "¿Qué mineral es responsable del transporte de gases respiratorios a través de la sangre?", "o": ["Hierro", "Calcio", "Zinc", "Fluoruro"], "c": 0, "exp": "Así aparece en la tabla de iones."}, {"q": "¿Qué mineral protege de caries?", "o": ["Fluoruro", "Hierro", "Yoduro", "Potasio"], "c": 0, "exp": "El fluoruro protege de caries."}, {"q": "¿Qué mineral es componente del esqueleto y participa en contracción muscular?", "o": ["Calcio", "Sodio", "Cloruro", "Zinc"], "c": 0, "exp": "El calcio se describe así en el material."}, {"q": "¿Qué mineral influye en la contracción muscular y conduce estímulos nerviosos?", "o": ["Potasio", "Hierro", "Fluoruro", "Yoduro"], "c": 0, "exp": "Eso se atribuye al potasio."}, {"q": "¿Qué mineral es importante en el equilibrio de líquidos y conducción de estímulos nerviosos?", "o": ["Sodio", "Hierro", "Fluoruro", "Calcio"], "c": 0, "exp": "Así se describe el sodio."}, {"q": "¿Qué enfermedad se menciona por falta de hemoglobina?", "o": ["Anemia", "Dermatitis", "Alopecia", "Galactosemia"], "c": 0, "exp": "La anemia aparece listada como consecuencia."}, {"q": "¿Qué tratamiento se menciona para anemia ferropénica?", "o": ["Dieta rica en hierro y vitamina C", "Solo agua", "Solo ejercicio", "Eliminar proteínas"], "c": 0, "exp": "Ese tratamiento aparece en el documento."}, {"q": "¿Qué son los carbohidratos según el material?", "o": ["Compuesto orgánico abundante formado por CHO", "Solo sales", "Solo proteínas", "Solo vitaminas"], "c": 0, "exp": "Así comienza el documento de carbohidratos."}, {"q": "¿Qué función de los carbohidratos se menciona con el ATP?", "o": ["Da energía inmediata", "Forma huesos", "Transporta oxígeno", "Produce hormonas"], "c": 0, "exp": "El material dice que el ATP da energía inmediata."}, {"q": "¿Qué polisacárido forma la pared celular de vegetales?", "o": ["Celulosa", "Lactosa", "Sacarosa", "Maltosa"], "c": 0, "exp": "La celulosa aparece como estructural en vegetales."}, {"q": "¿Dónde aparece la quitina según el documento de carbohidratos?", "o": ["En el exoesqueleto de algunos organismos", "En la sangre", "En la saliva", "En el ADN"], "c": 0, "exp": "La quitina se menciona en estructuras externas protectoras."}, {"q": "¿Qué son los lípidos según tus apuntes?", "o": ["Moléculas orgánicas insolubles en agua", "Minerales disueltos", "Azúcares simples", "Solo enzimas"], "c": 0, "exp": "El documento de lípidos los describe como moléculas orgánicas insolubles en agua."}, {"q": "¿Qué tipo de lípidos forman la bicapa de la membrana plasmática?", "o": ["Fosfolípidos", "Triglicéridos", "Céridos", "Monosacáridos"], "c": 0, "exp": "Los fosfolípidos forman la bicapa de la membrana celular."}, {"q": "¿Qué función importante cumplen los lípidos en el organismo?", "o": ["Reserva energética", "Transporte de oxígeno", "Formación de ADN", "Producción de sonidos"], "c": 0, "exp": "En tus apuntes aparecen como reserva energética."}, {"q": "¿Qué son las proteínas según el material?", "o": ["Macromoléculas formadas por aminoácidos", "Solo sales minerales", "Solo azúcares", "Solo lípidos"], "c": 0, "exp": "El documento de proteínas las define así."}, {"q": "¿Qué función de las proteínas se destaca en tus documentos?", "o": ["Catalizar reacciones químicas", "Solo dar color", "Solo producir glucosa", "Solo formar agua"], "c": 0, "exp": "Muchas proteínas actúan como enzimas."}, {"q": "¿Qué son los aminoácidos?", "o": ["La unidad básica que forma proteínas", "Un tipo de mineral", "Un disacárido", "Una vitamina"], "c": 0, "exp": "El documento de aminoácidos los presenta como base de las proteínas."}, {"q": "¿Qué enlace une aminoácidos para formar proteínas?", "o": ["Enlace peptídico", "Enlace iónico", "Enlace metálico", "Enlace glucosídico"], "c": 0, "exp": "Así se unen los aminoácidos en las proteínas."}]
 };
-
 const colors = ["red","blue","yellow","green"];
 const symbols = ["▲","◆","●","■"];
-
-let currentSubject = null;
-let questions = [];
-let index = 0;
-let score = 0;
-let streak = 0;
-let bestStreak = 0;
-let correctCount = 0;
-let wrongAnswers = [];
-let timeLeft = 15;
-let maxTime = 15;
-let timer = null;
-let locked = false;
+let currentSubject = null, questions = [], index = 0, score = 0, streak = 0, bestStreak = 0, correctCount = 0, wrongAnswers = [], timeLeft = 15, maxTime = 15, timer = null, locked = false;
 
 function $(id){ return document.getElementById(id); }
+function getSubjectName(){ return currentSubject === "biologia" ? "Biología" : "Física"; }
+function getLevel(score){ if(score >= 3200) return "Experto"; if(score >= 2400) return "Muy bien"; if(score >= 1500) return "Buen avance"; return "Aprendiz"; }
 
 function startSubject(subjectKey){
   currentSubject = subjectKey;
   questions = structuredClone(questionBanks[subjectKey]);
-  resetGameState();
-  $("menuScreen").classList.add("hidden");
-  $("endScreen").classList.add("hidden");
-  $("gameScreen").classList.remove("hidden");
+  index = 0; score = 0; streak = 0; bestStreak = 0; correctCount = 0; wrongAnswers = []; timeLeft = maxTime;
+  $("menuScreen").classList.add("hidden"); $("endScreen").classList.add("hidden"); $("gameScreen").classList.remove("hidden");
   $("subjectPill").textContent = "Materia: " + getSubjectName();
-  renderQuestion();
-}
-
-function resetGameState(){
-  index = 0;
-  score = 0;
-  streak = 0;
-  bestStreak = 0;
-  correctCount = 0;
-  wrongAnswers = [];
-  timeLeft = maxTime;
-  updateMeta();
-}
-
-function getSubjectName(){
-  return currentSubject === "biologia" ? "Biología" : "Física";
+  updateMeta(); renderQuestion();
 }
 
 function updateMeta(){
@@ -337,17 +134,11 @@ function updateMeta(){
 }
 
 function renderQuestion(){
-  locked = false;
-  clearInterval(timer);
-  timeLeft = maxTime;
-  updateMeta();
-  $("feedback").innerHTML = "";
+  locked = false; clearInterval(timer); timeLeft = maxTime; updateMeta(); $("feedback").innerHTML = "";
   const p = questions[index];
   $("questionNumber").textContent = `Pregunta ${index+1} de ${questions.length}`;
   $("questionText").textContent = p.q;
-
-  const answers = $("answers");
-  answers.innerHTML = "";
+  const answers = $("answers"); answers.innerHTML = "";
   p.o.forEach((texto, i) => {
     const btn = document.createElement("button");
     btn.className = `answer ${colors[i]}`;
@@ -355,61 +146,37 @@ function renderQuestion(){
     btn.onclick = () => chooseAnswer(i, btn);
     answers.appendChild(btn);
   });
-
   timer = setInterval(() => {
-    timeLeft--;
-    updateMeta();
-    if(timeLeft <= 0){
-      clearInterval(timer);
-      timeOut();
-    }
+    timeLeft--; updateMeta();
+    if(timeLeft <= 0){ clearInterval(timer); timeOut(); }
   }, 1000);
 }
 
 function chooseAnswer(i, btn){
   if(locked) return;
-  locked = true;
-  clearInterval(timer);
-
+  locked = true; clearInterval(timer);
   const p = questions[index];
   const buttons = [...document.querySelectorAll(".answer")];
-
   buttons.forEach((b, idx) => {
     b.disabled = true;
     if(idx !== i) b.classList.add("dim");
     if(idx === p.c) b.classList.add("correct");
   });
-
   if(i === p.c){
     const gained = 50 + (timeLeft * 10);
-    score += gained;
-    correctCount++;
-    streak++;
-    if(streak > bestStreak) bestStreak = streak;
-    btn.classList.add("correct");
+    score += gained; correctCount++; streak++; if(streak > bestStreak) bestStreak = streak;
     $("feedback").innerHTML = `🟢 ¡Correcta! +${gained} puntos<small>${p.exp}</small>`;
   } else {
-    streak = 0;
-    btn.classList.remove("dim");
-    btn.classList.add("wrong");
-    wrongAnswers.push({
-      pregunta: p.q,
-      correcta: p.o[p.c],
-      explicacion: p.exp
-    });
+    streak = 0; btn.classList.remove("dim"); btn.classList.add("wrong");
+    wrongAnswers.push({pregunta:p.q, correcta:p.o[p.c], explicacion:p.exp});
     $("feedback").innerHTML = `🔴 Incorrecta<small>${p.exp}</small>`;
   }
-
-  updateMeta();
-  setTimeout(nextQuestion, 1600);
+  updateMeta(); setTimeout(nextQuestion, 1400);
 }
 
 function timeOut(){
   if(locked) return;
-  locked = true;
-  streak = 0;
-  updateMeta();
-
+  locked = true; streak = 0; updateMeta();
   const p = questions[index];
   const buttons = [...document.querySelectorAll(".answer")];
   buttons.forEach((b, idx) => {
@@ -417,115 +184,52 @@ function timeOut(){
     if(idx !== p.c) b.classList.add("dim");
     if(idx === p.c) b.classList.add("correct");
   });
-
-  wrongAnswers.push({
-    pregunta: p.q,
-    correcta: p.o[p.c],
-    explicacion: p.exp
-  });
-
+  wrongAnswers.push({pregunta:p.q, correcta:p.o[p.c], explicacion:p.exp});
   $("feedback").innerHTML = `⏰ Se acabó el tiempo<small>${p.exp}</small>`;
-  setTimeout(nextQuestion, 1600);
+  setTimeout(nextQuestion, 1400);
 }
 
-function nextQuestion(){
-  index++;
-  if(index >= questions.length){
-    finishGame();
-  } else {
-    renderQuestion();
-  }
-}
-
-function getLevel(score){
-  if(score >= 2200) return "Experto";
-  if(score >= 1600) return "Muy bien";
-  if(score >= 1000) return "Buen avance";
-  return "Aprendiz";
-}
+function nextQuestion(){ index++; if(index >= questions.length) finishGame(); else renderQuestion(); }
 
 function finishGame(){
-  clearInterval(timer);
-  $("gameScreen").classList.add("hidden");
-  $("endScreen").classList.remove("hidden");
-
+  clearInterval(timer); $("gameScreen").classList.add("hidden"); $("endScreen").classList.remove("hidden");
   $("finalSubject").textContent = getSubjectName();
   $("finalScore").textContent = score;
   $("finalCorrect").textContent = `${correctCount} / ${questions.length}`;
   $("finalStreak").textContent = bestStreak;
   $("levelBadge").textContent = getLevel(score);
-
   let message = "";
-  if(correctCount === questions.length){
-    message = "Excelente. Se las sabe todas.";
-  } else if(correctCount >= Math.ceil(questions.length * 0.75)){
-    message = "Va muy bien preparado para esta materia.";
-  } else if(correctCount >= Math.ceil(questions.length * 0.5)){
-    message = "Va bien, pero conviene repasar un poco más.";
-  } else {
-    message = "Necesita repasar varias partes antes del examen.";
-  }
+  if(correctCount === questions.length) message = "Excelente. Se las sabe todas.";
+  else if(correctCount >= Math.ceil(questions.length * 0.75)) message = "Va muy bien preparado para esta materia.";
+  else if(correctCount >= Math.ceil(questions.length * 0.5)) message = "Va bien, pero conviene repasar un poco más.";
+  else message = "Necesita repasar varias partes antes del examen.";
   $("finalMessage").textContent = message;
 
-  const reviewBox = $("reviewBox");
-  const retryBtn = $("retryWrongBtn");
-
+  const reviewBox = $("reviewBox"), retryBtn = $("retryWrongBtn");
   if(wrongAnswers.length === 0){
-    reviewBox.classList.add("hidden");
-    reviewBox.innerHTML = "";
-    retryBtn.classList.add("hidden");
+    reviewBox.classList.add("hidden"); reviewBox.innerHTML = ""; retryBtn.classList.add("hidden");
   } else {
-    reviewBox.classList.remove("hidden");
-    retryBtn.classList.remove("hidden");
-    reviewBox.innerHTML = `<h3>Preguntas para repasar</h3>` +
-      wrongAnswers.map((w, idx) => `
-        <div class="review-item">
-          <strong>${idx + 1}. ${w.pregunta}</strong>
-          <p><strong>Respuesta correcta:</strong> ${w.correcta}<br>${w.explicacion}</p>
-        </div>
-      `).join("");
+    reviewBox.classList.remove("hidden"); retryBtn.classList.remove("hidden");
+    reviewBox.innerHTML = `<h3>Preguntas para repasar</h3>` + wrongAnswers.map((w, idx) => `
+      <div class="review-item">
+        <strong>${idx + 1}. ${w.pregunta}</strong>
+        <p><strong>Respuesta correcta:</strong> ${w.correcta}<br>${w.explicacion}</p>
+      </div>`).join("");
   }
 }
 
 function retryWrongQuestions(){
   if(wrongAnswers.length === 0) return;
-  const wrongOnly = wrongAnswers.map(w => ({
-    q: w.pregunta,
-    o: getOriginalOptionsByQuestion(w.pregunta),
-    c: getOriginalCorrectIndexByQuestion(w.pregunta),
-    exp: w.explicacion
-  }));
-  questions = wrongOnly;
-  resetGameState();
-  $("endScreen").classList.add("hidden");
-  $("gameScreen").classList.remove("hidden");
-  renderQuestion();
-}
-
-function getOriginalOptionsByQuestion(questionText){
-  const bank = questionBanks[currentSubject];
-  const item = bank.find(q => q.q === questionText);
-  return item ? [...item.o] : [];
-}
-
-function getOriginalCorrectIndexByQuestion(questionText){
-  const bank = questionBanks[currentSubject];
-  const item = bank.find(q => q.q === questionText);
-  return item ? item.c : 0;
+  const wrongOnly = wrongAnswers.map(w => structuredClone(questionBanks[currentSubject].find(q => q.q === w.pregunta)));
+  questions = wrongOnly; index = 0; score = 0; streak = 0; bestStreak = 0; correctCount = 0; wrongAnswers = []; timeLeft = maxTime;
+  $("endScreen").classList.add("hidden"); $("gameScreen").classList.remove("hidden");
+  updateMeta(); renderQuestion();
 }
 
 function backToMenu(){
-  clearInterval(timer);
-  currentSubject = null;
-  questions = [];
-  $("menuScreen").classList.remove("hidden");
-  $("gameScreen").classList.add("hidden");
-  $("endScreen").classList.add("hidden");
-  $("subjectPill").textContent = "Materia: —";
-  $("scorePill").textContent = "Puntaje: 0";
-  $("timePill").textContent = "Tiempo: 15s";
-  $("streakPill").textContent = "Racha: 0";
-  $("timerBar").style.width = "100%";
+  clearInterval(timer); currentSubject = null; questions = [];
+  $("menuScreen").classList.remove("hidden"); $("gameScreen").classList.add("hidden"); $("endScreen").classList.add("hidden");
+  $("subjectPill").textContent = "Materia: —"; $("scorePill").textContent = "Puntaje: 0"; $("timePill").textContent = "Tiempo: 15s"; $("streakPill").textContent = "Racha: 0"; $("timerBar").style.width = "100%";
 }
 </script>
 </body>
